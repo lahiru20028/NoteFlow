@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, LogOut, Search, FileText, Share2 } from 'lucide-react';
+import { Plus, LogOut, Search, FileText, Save, Share2 } from 'lucide-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Quill styles
 import API from '../api/axios';
 
 const Dashboard = () => {
     const [notes, setNotes] = useState([]);
     const [search, setSearch] = useState('');
+    const [selectedNote, setSelectedNote] = useState(null);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem('profile'));
 
     useEffect(() => {
         fetchNotes();
@@ -19,6 +24,34 @@ const Dashboard = () => {
             setNotes(data);
         } catch (error) {
             console.error('Error fetching notes', error);
+        }
+    };
+
+    const handleSelectNote = (note) => {
+        setSelectedNote(note);
+        setTitle(note.title);
+        setContent(note.content);
+    };
+
+    const handleCreateNew = () => {
+        setSelectedNote(null);
+        setTitle('');
+        setContent('');
+    };
+
+    const handleSave = async () => {
+        try {
+            if (selectedNote) {
+                // Update existing note
+                await API.put(`/notes/${selectedNote._id}`, { title, content });
+            } else {
+                // Create new note
+                await API.post('/notes', { title, content });
+            }
+            fetchNotes(); // Refresh list
+            alert('Note saved successfully!');
+        } catch (error) {
+            console.error('Save failed', error);
         }
     };
 
@@ -50,29 +83,51 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <button className="mx-4 mb-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                <button 
+                    onClick={handleCreateNew}
+                    className="mx-4 mb-4 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                >
                     <Plus size={20} /> New Note
                 </button>
 
                 <div className="flex-1 overflow-y-auto">
                     {notes.map((note) => (
-                        <div key={note._id} className="p-4 border-b hover:bg-blue-50 cursor-pointer transition">
+                        <div 
+                            key={note._id} 
+                            onClick={() => handleSelectNote(note)}
+                            className={`p-4 border-b cursor-pointer transition ${selectedNote?._id === note._id ? 'bg-blue-100' : 'hover:bg-blue-50'}`}
+                        >
                             <h3 className="font-semibold text-gray-800 truncate">{note.title}</h3>
                             <p className="text-sm text-gray-500 truncate">{note.content.replace(/<[^>]*>/g, '')}</p>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-blue-500">
-                                <FileText size={12} />
-                                <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
-                            </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                <div className="flex-1 flex items-center justify-center text-gray-400 flex-col">
-                    <FileText size={64} className="mb-4 opacity-20" />
-                    <p>Select a note to view or create a new one</p>
+            {/* Main Editor Area */}
+            <div className="flex-1 flex flex-col bg-white">
+                <div className="p-4 border-b flex justify-between items-center">
+                    <input 
+                        type="text" 
+                        placeholder="Note Title"
+                        className="text-2xl font-bold focus:outline-none w-full"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <div className="flex gap-2">
+                        <button onClick={handleSave} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                            <Save size={18} /> Save
+                        </button>
+                    </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-4">
+                    <ReactQuill 
+                        theme="snow" 
+                        value={content} 
+                        onChange={setContent} 
+                        className="h-full pb-12"
+                    />
                 </div>
             </div>
         </div>
