@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, LogOut, Search, FileText, Save, Share2 } from 'lucide-react';
+import { Plus, LogOut, Search, FileText, Save, Share2, Trash } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css'; // Quill styles
 import API from '../api/axios';
@@ -64,6 +64,26 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Save failed', error);
             alert(error.response?.data?.message || 'Failed to save the note. Please try again.');
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedNote) return;
+
+        if (window.confirm('Are you sure you want to delete this note?')) {
+            try {
+                await API.delete(`/notes/${selectedNote._id}`);
+                alert('Note deleted successfully!');
+
+                // Refresh list and clear selection
+                fetchNotes();
+                setSelectedNote(null);
+                setTitle('');
+                setContent('');
+            } catch (error) {
+                console.error('Delete failed', error);
+                alert(error.response?.data?.message || 'Failed to delete note');
+            }
         }
     };
 
@@ -140,12 +160,20 @@ const Dashboard = () => {
                     />
                     <div className="flex gap-2">
                         {selectedNote && (
-                            <button
-                                onClick={() => setShowShareModal(true)}
-                                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                            >
-                                <Share2 size={18} /> Share
-                            </button>
+                            <>
+                                <button
+                                    onClick={() => setShowShareModal(true)}
+                                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                                >
+                                    <Share2 size={18} /> Share
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                                >
+                                    <Trash size={18} /> Delete
+                                </button>
+                            </>
                         )}
                         <button onClick={handleSave} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
                             <Save size={18} /> Save

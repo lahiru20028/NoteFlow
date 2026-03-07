@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api', // ඔබේ Backend URL එක
+    baseURL: 'http://localhost:5000/api', // Your Backend URL
 });
 
-// සෑම request එකකටම Token එක ස්වයංක්‍රීයව එක් කිරීමට
+// Automatically add token to every request
 API.interceptors.request.use((req) => {
     const profile = localStorage.getItem('profile');
     if (profile) {
