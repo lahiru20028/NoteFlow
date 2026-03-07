@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, LogOut, Search, FileText, Save, Share2, Trash, User, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Plus, LogOut, Search, FileText, Save, Share2, Trash, User, Moon, Sun, ChevronDown, X } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css'; // Quill styles
 import API from '../api/axios';
@@ -220,9 +220,18 @@ const Dashboard = () => {
                         <input
                             type="text"
                             placeholder="Search notes..."
-                            className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                            value={search}
+                            className="w-full pl-10 pr-10 py-2 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                             onChange={(e) => setSearch(e.target.value)}
                         />
+                        {search && (
+                            <button
+                                onClick={() => setSearch('')}
+                                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                            >
+                                <X size={18} />
+                            </button>
+                        )}
                     </div>
                 </div>
 

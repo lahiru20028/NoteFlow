@@ -31,9 +31,19 @@ const getNotes = async (req, res) => {
             ]
         };
 
-        // Full-text search logic
+        // Full-text partial search logic via regex
         if (search) {
-            query.$text = { $search: search };
+            query = {
+                $and: [
+                    query, // Must be owner or collaborator
+                    {
+                        $or: [
+                            { title: { $regex: search, $options: 'i' } },
+                            { content: { $regex: search, $options: 'i' } }
+                        ]
+                    }
+                ]
+            };
         }
 
         const notes = await Note.find(query).populate('owner', 'name email');
