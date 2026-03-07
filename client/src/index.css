@@ -1,3 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Ensure React-Quill formatting is not broken by Tailwind's reset */
+.ql-editor h1 {
+  @apply text-4xl font-bold my-4;
+}
+
+.ql-editor h2 {
+  @apply text-3xl font-bold my-3;
+}
+
+.ql-editor h3 {
+  @apply text-2xl font-bold my-2;
+}
+
+.ql-editor ul {
+  @apply list-disc list-inside my-2;
+}
+
+.ql-editor ol {
+  @apply list-decimal list-inside my-2;
+}
+
+.ql-editor a {
+  @apply text-blue-600 underline;
+}

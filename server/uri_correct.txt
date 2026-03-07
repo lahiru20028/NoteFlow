@@ -1,0 +1,1 @@
+mongodb://admin:admin1234@ac-yuyiczs-shard-00-00.knuxec9.mongodb.net:27017,ac-yuyiczs-shard-00-02.knuxec9.mongodb.net:27017,ac-yuyiczs-shard-00-01.knuxec9.mongodb.net:27017/?authSource=admin&replicaSet=atlas-dof974-shard-0

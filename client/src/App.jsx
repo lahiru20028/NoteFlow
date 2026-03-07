@@ -27,9 +27,7 @@ function App() {
                         path="/dashboard" 
                         element={
                             <ProtectedRoute>
-                                <div className="p-10 text-center text-2xl">
-                                    Welcome to your Dashboard! (Coming Soon)
-                                </div>
+                                <Dashboard />
                             </ProtectedRoute>
                         } 
                     />
@@ -40,14 +38,6 @@ function App() {
             </div>
         </Router>
     );
-    <Route 
-    path="/dashboard" 
-    element={
-        <ProtectedRoute>
-            <Dashboard />
-        </ProtectedRoute>
-    } 
-/>
 }
 
 export default App;

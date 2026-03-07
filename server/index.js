@@ -26,13 +26,20 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, {
+    // Add these options for stability and bypass DNS issues
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+})
     .then(() => {
         console.log('MongoDB Connected Successfully');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
     })
     .catch((err) => {
         console.error('Database Connection Error:', err.message);
+        // Do not crash immediately on local DNS drops; let nodemon or user retry
     });
+
+// Start listening regardless of DB connection status
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
