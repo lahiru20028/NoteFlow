@@ -140,6 +140,11 @@ const Dashboard = () => {
         };
     }, [showUserMenu]);
 
+    const stripHtml = (html) => {
+        if (!html) return '';
+        return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ');
+    };
+
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
         const html = document.documentElement;
@@ -250,7 +255,7 @@ const Dashboard = () => {
                             className={`p-4 border-b dark:border-gray-700 cursor-pointer transition ${selectedNote?._id === note._id ? 'bg-blue-100 dark:bg-blue-900/40' : 'hover:bg-blue-50 dark:hover:bg-gray-700/50'}`}
                         >
                             <h3 className="font-semibold text-gray-800 dark:text-gray-200 truncate">{note.title || 'Untitled'}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{(note.content || '').replace(/<[^>]*>/g, '')}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{stripHtml(note.content)}</p>
                         </div>
                     ))}
                 </div>
